@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://astral.dev/schema/analysis-result.schema.json",
+  "title": "AnalysisResult",
+  "description": "Schema for an individual file analysis result produced by the Astral pipeline.",
+  "type": "object",
+  "required": ["request_id", "file", "status", "diagnostics"],
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the originating BatchRequest."
+    },
+    "file": {
+      "type": "string",
+      "description": "Absolute or repo-relative path of the analyzed file."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["success", "warning", "error", "skipped"],
+      "description": "Overall status of the analysis for this file."
+    },
+    "diagnostics": {
+      "type": "array",
+      "description": "List of diagnostic findings.",
+      "items": {
+        "type": "object",
+        "required": ["severity", "message", "line"],
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["info", "warning", "error"]
+          },
+          "message": {
+            "type": "string"
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "column": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "rule": {
+            "type": "string",
+            "description": "Identifier of the rule that triggered this diagnostic."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "description": "Quantitative metrics collected during analysis.",
+      "properties": {
+        "lines_analyzed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duration_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tokens_used": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when analysis completed."
+    }
+  },
+  "additionalProperties": false
+}

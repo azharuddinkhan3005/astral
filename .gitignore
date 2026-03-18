@@ -1,0 +1,47 @@
+# Rust
+/target/
+**/*.rs.bk
+
+# Node
+node_modules/
+*.node
+dist/
+crates/node/*.node
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+*.whl
+crates/python/target/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.so
+*.dylib
+*.dll
+
+# Environment
+.env
+.env.local
+
+# Astral output
+astral-output/
+
+# Claude Code internals
+.claude/
+
+# Build spec (internal)
+docs/astral.md

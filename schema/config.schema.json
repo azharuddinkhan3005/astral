@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://astral.dev/schema/config.schema.json",
+  "title": "Config",
+  "description": "Schema for Astral pipeline configuration.",
+  "type": "object",
+  "properties": {
+    "max_concurrency": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 64,
+      "default": 8,
+      "description": "Maximum number of files to process concurrently."
+    },
+    "timeout_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 300,
+      "description": "Per-file analysis timeout in seconds."
+    },
+    "output_format": {
+      "type": "string",
+      "enum": ["json", "sarif", "markdown", "github"],
+      "default": "json",
+      "description": "Format for the final output report."
+    },
+    "rules": {
+      "type": "object",
+      "description": "Rule-specific configuration overrides.",
+      "properties": {
+        "enabled": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Explicit list of rule IDs to enable."
+        },
+        "disabled": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Explicit list of rule IDs to disable."
+        },
+        "severity_overrides": {
+          "type": "object",
+          "description": "Map of rule ID to overridden severity.",
+          "additionalProperties": {
+            "type": "string",
+            "enum": ["info", "warning", "error"]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "ignore_patterns": {
+      "type": "array",
+      "description": "Glob patterns for files to exclude from analysis.",
+      "items": { "type": "string" },
+      "default": ["**/node_modules/**", "**/target/**", "**/.git/**"]
+    },
+    "model": {
+      "type": "string",
+      "description": "Model identifier used for AI-assisted analysis steps.",
+      "default": "claude-sonnet-4-6"
+    }
+  },
+  "additionalProperties": false
+}

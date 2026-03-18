@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://astral.dev/schema/batch-request.schema.json",
+  "title": "BatchRequest",
+  "description": "Schema for a batch analysis request submitted to the Astral pipeline.",
+  "type": "object",
+  "required": ["id", "files", "config"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for this batch request."
+    },
+    "files": {
+      "type": "array",
+      "description": "List of file paths or globs to include in the batch.",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "config": {
+      "$ref": "config.schema.json",
+      "description": "Configuration for this batch run."
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "normal", "high"],
+      "default": "normal",
+      "description": "Scheduling priority for the batch."
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Arbitrary key-value metadata attached to the request.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the request was created."
+    }
+  },
+  "additionalProperties": false
+}

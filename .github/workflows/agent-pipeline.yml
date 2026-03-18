@@ -1,0 +1,51 @@
+name: Agent Pipeline
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  security-review:
+    name: Security Review
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run security audit agent
+        uses: anthropics/claude-code-action@v1
+        with:
+          model: claude-sonnet-4-6
+          prompt: |
+            You are the security-audit-agent. Review the changes in this PR for:
+            - Unsafe code blocks and their justification
+            - Dependency vulnerabilities
+            - Input validation gaps
+            - Secret or credential exposure
+            - Path traversal or injection risks
+            Provide a structured security report as a PR comment.
+          allowed_tools: "Bash,Read,Grep,Glob"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  test-generation:
+    name: Test Generation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Run test runner agent
+        uses: anthropics/claude-code-action@v1
+        with:
+          model: claude-sonnet-4-6
+          prompt: |
+            You are the test-runner-agent. Analyze the changes in this PR and:
+            1. Identify new or modified functions that lack test coverage.
+            2. Generate test cases for uncovered code paths.
+            3. Run the existing test suite with `cargo test --workspace`.
+            4. Report results and any suggested new tests as a PR comment.
+          allowed_tools: "Bash,Read,Grep,Glob"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

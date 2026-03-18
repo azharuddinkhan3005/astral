@@ -1,0 +1,30 @@
+name: Node CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    name: Build & Test Node Bindings
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        working-directory: crates/node
+        run: npm ci
+      - name: Build with napi
+        working-directory: crates/node
+        run: npx napi build --release
+      - name: Run tests
+        working-directory: crates/node
+        run: npm test
