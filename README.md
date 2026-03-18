@@ -177,7 +177,7 @@ const sarif = analyser.renderOutput(resultsJson, 'sarif');
 
 ```python
 import json
-from astral_code import Analyser
+from astral import Analyser
 
 analyser = Analyser(json.dumps({
     "model": "claude-haiku-4-5-20251001",
