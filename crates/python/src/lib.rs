@@ -3,6 +3,11 @@ use pyo3::types::{PyDict, PyList};
 
 use astral_core::{Config, CoreAnalyser};
 
+/// Convert an anyhow error into a PyRuntimeError.
+fn to_py_err(e: impl std::fmt::Display) -> PyErr {
+    PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(e.to_string())
+}
+
 // ---------------------------------------------------------------------------
 // Analyser pyclass — thin wrapper around astral_core::CoreAnalyser
 // ---------------------------------------------------------------------------
@@ -26,10 +31,7 @@ impl Analyser {
 
     /// Walk the repo, parse files, chunk them, and return a list of dicts.
     fn scan<'py>(&self, py: Python<'py>, repo_path: &str) -> PyResult<Bound<'py, PyList>> {
-        let chunks = self
-            .inner
-            .scan(repo_path)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{e}")))?;
+        let chunks = self.inner.scan(repo_path).map_err(to_py_err)?;
 
         let list = PyList::empty_bound(py);
         for chunk in &chunks {
@@ -50,44 +52,23 @@ impl Analyser {
 
     /// Build batch requests from a repo path and return them as a JSON string.
     fn build_requests(&self, repo_path: &str) -> PyResult<String> {
-        let chunks = self
-            .inner
-            .scan(repo_path)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{e}")))?;
-
+        let chunks = self.inner.scan(repo_path).map_err(to_py_err)?;
         let requests = self.inner.build_requests(&chunks);
-        let json = serde_json::to_string(&requests)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{e}")))?;
-        Ok(json)
+        serde_json::to_string(&requests).map_err(to_py_err)
     }
 
     /// Aggregate raw JSONL results from the Batch API.
     fn aggregate_results(&self, jsonl: &str, repo_path: &str) -> PyResult<String> {
-        let chunks = self
-            .inner
-            .scan(repo_path)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{e}")))?;
-
-        let results = self
-            .inner
-            .aggregate_results(jsonl, &chunks)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{e}")))?;
-
-        let json = serde_json::to_string(&results)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{e}")))?;
-        Ok(json)
+        let chunks = self.inner.scan(repo_path).map_err(to_py_err)?;
+        let results = self.inner.aggregate_results(jsonl, &chunks).map_err(to_py_err)?;
+        serde_json::to_string(&results).map_err(to_py_err)
     }
 
     /// Render analysis results to the specified output format.
     fn render_output(&self, results_json: &str, format: &str) -> PyResult<String> {
         let results: Vec<astral_core::AnalysisResult> = serde_json::from_str(results_json)
             .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Invalid results JSON: {e}")))?;
-
-        let output = self
-            .inner
-            .render_output(&results, format)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{e}")))?;
-        Ok(output)
+        self.inner.render_output(&results, format).map_err(to_py_err)
     }
 }
 

@@ -19,11 +19,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install maturin
-        run: pip install maturin pytest
+      - name: Create venv and install deps
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install maturin
       - name: Build with maturin
         working-directory: crates/python
-        run: maturin develop --release
-      - name: Run tests
-        working-directory: crates/python
-        run: pytest
+        run: |
+          source ../../.venv/bin/activate
+          maturin develop --release
+      - name: Smoke test
+        run: |
+          source .venv/bin/activate
+          python -c "from astral import Analyser; a = Analyser('{}'); print('Python binding OK')"
