@@ -17,16 +17,16 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            node-arch: linux-x64-gnu
+            suffix: linux-x64-gnu
           - os: macos-latest
             target: x86_64-apple-darwin
-            node-arch: darwin-x64
+            suffix: darwin-x64
           - os: macos-latest
             target: aarch64-apple-darwin
-            node-arch: darwin-arm64
+            suffix: darwin-arm64
           - os: windows-latest
             target: x86_64-pc-windows-msvc
-            node-arch: win32-x64-msvc
+            suffix: win32-x64-msvc
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -41,11 +41,19 @@ jobs:
       - name: Build native module
         working-directory: crates/node
         run: npx napi build --release --target ${{ matrix.target }}
+      - name: Rename to platform-specific name
+        working-directory: crates/node
+        shell: bash
+        run: |
+          for f in *.node; do
+            mv "$f" "astral-code.${{ matrix.suffix }}.node"
+          done
+          ls -la *.node
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: binding-${{ matrix.node-arch }}
-          path: crates/node/*.node
+          name: binding-${{ matrix.suffix }}
+          path: crates/node/astral-code.*.node
 
   publish:
     name: Publish to npm
@@ -57,14 +65,14 @@ jobs:
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
+      - name: Install dependencies
+        working-directory: crates/node
+        run: npm install
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: crates/node/artifacts
-      - name: Install dependencies
-        working-directory: crates/node
-        run: npm install
-      - name: Move bindings
+      - name: Move all platform bindings
         working-directory: crates/node
         run: |
           for dir in artifacts/binding-*; do
