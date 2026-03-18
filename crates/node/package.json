@@ -8,17 +8,13 @@
     "build": "napi build --release",
     "build:debug": "napi build",
     "test": "node -e \"const { Analyser } = require('./index.js'); const a = new Analyser('{}'); console.log('OK:', a.scan(process.cwd()).length, 'chunks')\"",
-    "prepublishOnly": "napi prepublish -t npm"
+    "prepublishOnly": "echo 'ready to publish'"
   },
   "napi": {
     "name": "astral-code",
     "triples": {
       "defaults": true
     }
-  },
-  "bin": {
-    "astral": "./dist/cli.js",
-    "astral-mcp": "./dist/mcp-server.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",

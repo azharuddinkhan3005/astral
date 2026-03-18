@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   build:
-    name: Build wheels - ${{ matrix.os }}
+    name: Build wheels - ${{ matrix.os }} (${{ matrix.target }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -17,8 +17,6 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64
-          - os: ubuntu-latest
-            target: aarch64
           - os: macos-latest
             target: x86_64
           - os: macos-latest
