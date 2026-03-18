@@ -25,59 +25,55 @@ Works as a **CLI tool** and an **importable library** in both TypeScript and Pyt
 
 ### Install
 
-```bash
-# Node.js / TypeScript
-npm install astral-code
+Download the latest binary from [GitHub Releases](https://github.com/azharuddinkhan3005/astral/releases):
 
-# Python
-pip install astral-code
+```bash
+# macOS (Apple Silicon)
+curl -L https://github.com/azharuddinkhan3005/astral/releases/latest/download/astral-darwin-arm64.tar.gz | tar xz
+sudo mv astral /usr/local/bin/
+
+# macOS (Intel)
+curl -L https://github.com/azharuddinkhan3005/astral/releases/latest/download/astral-darwin-x64.tar.gz | tar xz
+sudo mv astral /usr/local/bin/
+
+# Linux
+curl -L https://github.com/azharuddinkhan3005/astral/releases/latest/download/astral-linux-x64.tar.gz | tar xz
+sudo mv astral /usr/local/bin/
 ```
 
-### Install from source
+Or build from source:
 
 ```bash
-git clone https://github.com/azharuddinkhan3005/astral.git && cd astral
-
-# Build everything
-make build
-
-# Or build individually:
-cargo build --workspace                          # Rust core + node binding
-cd crates/node && npm install && npx napi build  # Node native addon
-cd crates/python && pip install maturin && maturin develop  # Python wheel
+cargo install --git https://github.com/azharuddinkhan3005/astral.git astral-cli
 ```
 
-### TypeScript CLI
+Or for programmatic use:
 
 ```bash
-cd crates/node && npm link   # makes `astral` available globally
+npm install astral-code    # Node.js / TypeScript
+pip install astral-code    # Python
+```
 
-# Analyse a repo
+### Usage
+
+```bash
+# Scan a repo — see what astral finds (no API call)
+astral scan ./my-project
+
+# Analyse — full pipeline with Claude Batch API
 astral analyse ./my-project
 
-# Dry run — show chunk count and estimated cost, don't submit
+# Dry run — show cost estimate without submitting
 astral analyse ./my-project --dry-run
 
-# Specify output formats
-astral analyse ./my-project --output markdown,json,sarif
+# Custom output formats
+astral analyse ./my-project --output markdown,json,sarif,html
 
 # Use a config file
 astral analyse ./my-project --config astral.config.json
-```
 
-### Python CLI
-
-```bash
-cd crates/python && maturin develop  # install into current venv
-
-# Analyse a repo
-astral analyse ./my-project
-
-# Dry run
-astral analyse ./my-project --dry-run
-
-# Custom output
-astral analyse ./my-project --output markdown,sarif --config astral.config.json
+# Aggregate results from a previous batch
+astral aggregate ./my-project results.jsonl --output markdown,html
 ```
 
 ---
