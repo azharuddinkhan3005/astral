@@ -1,9 +1,9 @@
 {
-  "name": "astral",
+  "name": "astral-code",
   "version": "0.1.0",
-  "description": "Codebase analysis via Claude Batch API",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Analyse any codebase with Claude — at scale, at 50% cost",
+  "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "build": "napi build --release",
     "build:debug": "napi build",
@@ -11,7 +11,7 @@
     "prepublishOnly": "napi prepublish -t npm"
   },
   "napi": {
-    "name": "astral",
+    "name": "astral-code",
     "triples": {
       "defaults": true
     }

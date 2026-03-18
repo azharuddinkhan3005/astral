@@ -23,10 +23,20 @@ Works as a **CLI tool** and an **importable library** in both TypeScript and Pyt
 - Python 3.9+ (for Python CLI)
 - An `ANTHROPIC_API_KEY` environment variable
 
+### Install
+
+```bash
+# Node.js / TypeScript
+npm install astral-code
+
+# Python
+pip install astral-code
+```
+
 ### Install from source
 
 ```bash
-git clone <repo-url> && cd astral
+git clone https://github.com/azharuddinkhan3005/astral.git && cd astral
 
 # Build everything
 make build
@@ -142,7 +152,7 @@ Custom prompts:
 ### TypeScript / Node.js
 
 ```typescript
-import { Analyser } from 'astral';
+import { Analyser } from 'astral-code';
 
 const analyser = new Analyser(JSON.stringify({
   model: 'claude-haiku-4-5-20251001',
@@ -171,7 +181,7 @@ const sarif = analyser.renderOutput(resultsJson, 'sarif');
 
 ```python
 import json
-from astral import Analyser
+from astral_code import Analyser
 
 analyser = Analyser(json.dumps({
     "model": "claude-haiku-4-5-20251001",

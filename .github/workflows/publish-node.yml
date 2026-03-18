@@ -1,0 +1,75 @@
+name: Publish npm
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build - ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            node-arch: linux-x64-gnu
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            node-arch: darwin-x64
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            node-arch: darwin-arm64
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            node-arch: win32-x64-msvc
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        working-directory: crates/node
+        run: npm install
+      - name: Build native module
+        working-directory: crates/node
+        run: npx napi build --release --target ${{ matrix.target }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: binding-${{ matrix.node-arch }}
+          path: crates/node/*.node
+
+  publish:
+    name: Publish to npm
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: crates/node/artifacts
+      - name: Move bindings
+        working-directory: crates/node
+        run: |
+          for dir in artifacts/binding-*; do
+            cp "$dir"/*.node .
+          done
+          ls -la *.node
+      - name: Publish
+        working-directory: crates/node
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
