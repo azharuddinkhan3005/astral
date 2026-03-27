@@ -1,3 +1,6 @@
+// PyO3 0.22 macros trigger these lints; safe to suppress until PyO3 update
+#![allow(clippy::useless_conversion, unsafe_op_in_unsafe_fn)]
+
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyList};
 
@@ -22,8 +25,9 @@ impl Analyser {
     /// Create a new Analyser from a JSON configuration string.
     #[new]
     fn new(config_json: &str) -> PyResult<Self> {
-        let config: Config = serde_json::from_str(config_json)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Invalid config JSON: {e}")))?;
+        let config: Config = serde_json::from_str(config_json).map_err(|e| {
+            PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Invalid config JSON: {e}"))
+        })?;
         Ok(Self {
             inner: CoreAnalyser::new(config),
         })
@@ -60,15 +64,24 @@ impl Analyser {
     /// Aggregate raw JSONL results from the Batch API.
     fn aggregate_results(&self, jsonl: &str, repo_path: &str) -> PyResult<String> {
         let chunks = self.inner.scan(repo_path).map_err(to_py_err)?;
-        let results = self.inner.aggregate_results(jsonl, &chunks).map_err(to_py_err)?;
+        let results = self
+            .inner
+            .aggregate_results(jsonl, &chunks)
+            .map_err(to_py_err)?;
         serde_json::to_string(&results).map_err(to_py_err)
     }
 
     /// Render analysis results to the specified output format.
     fn render_output(&self, results_json: &str, format: &str) -> PyResult<String> {
         let results: Vec<astral_core::AnalysisResult> = serde_json::from_str(results_json)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Invalid results JSON: {e}")))?;
-        self.inner.render_output(&results, format).map_err(to_py_err)
+            .map_err(|e| {
+                PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                    "Invalid results JSON: {e}"
+                ))
+            })?;
+        self.inner
+            .render_output(&results, format)
+            .map_err(to_py_err)
     }
 }
 

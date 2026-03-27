@@ -78,6 +78,7 @@ jobs:
           for dir in artifacts/binding-*; do
             cp "$dir"/*.node .
           done
+          rm -rf artifacts
           ls -la *.node
       - name: Publish
         working-directory: crates/node

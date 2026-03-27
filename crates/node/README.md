@@ -9,7 +9,7 @@ Works as a **CLI tool** and an **importable library** in both TypeScript and Pyt
 ## Architecture
 
 <p align="center">
-  <img src="docs/architecture.svg" alt="astral architecture" width="800" />
+  <img src="https://raw.githubusercontent.com/azharuddinkhan3005/astral/main/docs/architecture.svg" alt="astral architecture" width="800" />
 </p>
 
 ---

@@ -1,4 +1,4 @@
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use astral_core::batch_builder::estimate_cost;
 use astral_core::outputs;
 use astral_core::{Config, CoreAnalyser};

@@ -1,7 +1,8 @@
 [package]
 name = "astral-python"
-version = "0.1.0"
-edition = "2021"
+version.workspace = true
+edition = "2021" # pinned until PyO3 supports 2024 edition
+license.workspace = true
 
 [lib]
 name = "astral"

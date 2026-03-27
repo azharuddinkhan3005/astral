@@ -4,6 +4,23 @@
   "description": "Analyse any codebase with Claude — at scale, at 50% cost",
   "main": "index.js",
   "types": "index.d.ts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azharuddinkhan3005/astral"
+  },
+  "homepage": "https://github.com/azharuddinkhan3005/astral",
+  "keywords": ["claude", "anthropic", "batch-api", "code-analysis", "tree-sitter", "ai"],
+  "engines": {
+    "node": ">= 18"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "README.md",
+    "*.node",
+    "src/ts/**/*.ts"
+  ],
   "scripts": {
     "build": "napi build --release",
     "build:debug": "napi build",

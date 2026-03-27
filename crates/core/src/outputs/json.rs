@@ -1,5 +1,5 @@
-use crate::aggregator::compute_stats;
 use crate::AnalysisResult;
+use crate::aggregator::compute_stats;
 use anyhow::Result;
 use serde::Serialize;
 

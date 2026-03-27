@@ -1,6 +1,6 @@
 use crate::parser::{chunk_node_types, parse_source};
 use crate::walker::FileEntry;
-use crate::{chunk_id, ChunkType, CodeChunk, Config};
+use crate::{ChunkType, CodeChunk, Config, chunk_id};
 use anyhow::Result;
 use rayon::prelude::*;
 use std::path::Path;

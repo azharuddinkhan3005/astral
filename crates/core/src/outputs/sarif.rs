@@ -193,10 +193,12 @@ mod tests {
         let parsed: serde_json::Value = serde_json::from_str(&output).unwrap();
 
         assert_eq!(parsed["version"], "2.1.0");
-        assert!(parsed["$schema"]
-            .as_str()
-            .unwrap()
-            .contains("sarif-schema-2.1.0"));
+        assert!(
+            parsed["$schema"]
+                .as_str()
+                .unwrap()
+                .contains("sarif-schema-2.1.0")
+        );
     }
 
     #[test]

@@ -1,4 +1,4 @@
-use crate::{detect_language, Config};
+use crate::{Config, detect_language};
 use anyhow::Result;
 use ignore::WalkBuilder;
 use serde::{Deserialize, Serialize};
@@ -105,10 +105,10 @@ fn matches_any_glob(path: &Path, base: &Path, patterns: &[String]) -> bool {
     let rel_str = relative.to_string_lossy();
 
     for pattern in patterns {
-        if let Ok(glob) = glob::Pattern::new(pattern) {
-            if glob.matches(&rel_str) {
-                return true;
-            }
+        if let Ok(glob) = glob::Pattern::new(pattern)
+            && glob.matches(&rel_str)
+        {
+            return true;
         }
     }
     false
