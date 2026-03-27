@@ -78,7 +78,7 @@ checksum = "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c"
 
 [[package]]
 name = "astral-cli"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "anyhow",
  "astral-core",
@@ -92,7 +92,7 @@ dependencies = [
 
 [[package]]
 name = "astral-core"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "anyhow",
  "csv",
@@ -120,7 +120,7 @@ dependencies = [
 
 [[package]]
 name = "astral-node"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "astral-core",
  "napi",
@@ -132,7 +132,7 @@ dependencies = [
 
 [[package]]
 name = "astral-python"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "astral-core",
  "pyo3",

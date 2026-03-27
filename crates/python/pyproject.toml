@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "astral-code"
-version = "0.1.3"
+version = "0.1.4"
 description = "Analyse any codebase with Claude — at scale, at 50% cost"
 readme = "README.md"
 license = { text = "MIT" }
